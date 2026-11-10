@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "PharmaCore ERP API - Postman Collection",
+    "description": "Postman API test collection for Algions Pharmacy Management System Assessment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5001/api", "type": "string" },
+    { "key": "token", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "1. Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@pharmacy.com\",\n  \"password\": \"Password@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "2. Get Current Profile (/me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medicines & Batches",
+      "item": [
+        {
+          "name": "Get All Medicines",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/medicines", "host": ["{{baseUrl}}"], "path": ["medicines"] }
+          }
+        },
+        {
+          "name": "Get FEFO Recommendation for Dolo",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/batches/fefo-recommendation?medicineId=MED_ID&quantity=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["batches", "fefo-recommendation"],
+              "query": [
+                { "key": "medicineId", "value": "MED_ID" },
+                { "key": "quantity", "value": "5" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales & Invoicing",
+      "item": [
+        {
+          "name": "Create Sale (Auto FEFO)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Test Patient\",\n  \"customerPhone\": \"+91 98765 00000\",\n  \"doctorName\": \"Dr. Sharma\",\n  \"paymentMethod\": \"CASH\",\n  \"taxPercent\": 5,\n  \"items\": [\n    {\n      \"medicineId\": \"MED_ID\",\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/sales", "host": ["{{baseUrl}}"], "path": ["sales"] }
+          }
+        },
+        {
+          "name": "Get All Sales Invoices",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/sales", "host": ["{{baseUrl}}"], "path": ["sales"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports & Auditing",
+      "item": [
+        {
+          "name": "Stock Reconciliation (Acceptance Test 5)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/reports/reconciliation", "host": ["{{baseUrl}}"], "path": ["reports", "reconciliation"] }
+          }
+        },
+        {
+          "name": "Safety & Near-Expiry Alerts (Acceptance Test 3)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/reports/alerts", "host": ["{{baseUrl}}"], "path": ["reports", "alerts"] }
+          }
+        },
+        {
+          "name": "Stock Movement Ledger (Audit Trail)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/audit", "host": ["{{baseUrl}}"], "path": ["audit"] }
+          }
+        }
+      ]
+    }
+  ]
+}
