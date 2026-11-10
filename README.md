@@ -168,6 +168,7 @@ Aligions/
 |:---|:---|
 | **Internship Role** | Full-Stack Web Development |
 | **Assigned Project** | Pharmacy Management System |
+| **Live Web Demo URL** | https://frontend-ten-mocha-czjuzlburw.vercel.app |
 | **Tech Stack** | React 18, Vite, TypeScript, Tailwind CSS, Node.js, Express, Prisma ORM, SQLite, Jest |
 | **Demo Accounts** | `admin@pharmacy.com` / `Password@123`<br>`pharmacist@pharmacy.com` / `Password@123`<br>`cashier@pharmacy.com` / `Password@123` |
 | **API Documentation** | Interactive Swagger explorer at `http://localhost:5001/api-docs` |
