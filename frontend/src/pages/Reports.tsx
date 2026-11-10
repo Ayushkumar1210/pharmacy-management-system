@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Clock,
   ShieldCheck,
+  Download,
 } from 'lucide-react';
 
 export const Reports: React.FC = () => {
@@ -50,6 +51,23 @@ export const Reports: React.FC = () => {
 
   const setTab = (tab: string) => {
     setSearchParams({ tab });
+  };
+
+  const exportReconciliationCSV = () => {
+    const headers = 'Medicine,SKU,Category,Purchases,Sales,Returns,AdjustmentsAdd,AdjustmentsSub,CalculatedStock,BatchStock,Discrepancy,Status\n';
+    const rows = reconciliation
+      .map(
+        (r) =>
+          `"${r.name}","${r.sku}","${r.category}",${r.totalPurchases},${r.totalSales},${r.totalReturns},${r.totalAdjustmentsAdd},${r.totalAdjustmentsSub},${r.calculatedClosingStock},${r.actualBatchStock},${r.discrepancy},"${r.isReconciled ? 'RECONCILED' : 'DISCREPANCY'}"`
+      )
+      .join('\n');
+
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Stock_Reconciliation_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
   };
 
   return (
@@ -123,9 +141,18 @@ export const Reports: React.FC = () => {
                 <strong className="font-bold">Inventory Ledger Invariant Verified:</strong> Calculated Stock (Purchases - Sales + Returns ± Adjustments) perfectly matches Actual Batch Inventory.
               </div>
             </div>
-            <span className="px-3 py-1 bg-teal-700 text-white rounded-full font-bold text-[11px]">
-              0 Discrepancy (100% Reconciled)
-            </span>
+            <div className="flex items-center space-x-2">
+              <span className="px-3 py-1 bg-teal-700 text-white rounded-full font-bold text-[11px]">
+                0 Discrepancy (100% Reconciled)
+              </span>
+              <button
+                onClick={exportReconciliationCSV}
+                className="flex items-center space-x-1 px-3 py-1 bg-white hover:bg-teal-100 text-teal-800 border border-teal-300 rounded-full font-bold text-[11px] transition shadow-xs"
+              >
+                <Download className="w-3.5 h-3.5 text-teal-600" />
+                <span>Export CSV</span>
+              </button>
+            </div>
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
