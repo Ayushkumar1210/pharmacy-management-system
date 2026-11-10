@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: pharmacore-erp
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: "file:./pharmacy.db"
+      - key: JWT_SECRET
+        value: "pharmacy-super-secure-jwt-secret-key-change-in-production-2026"
+      - key: JWT_EXPIRES_IN
+        value: "1d"
